@@ -1,0 +1,31 @@
+APP
+const [list, setList ] = useState([])
+const [complist, setCompList ] = useState([])
+const [quote, setQuote] = useState("")
+
+<Nav />
+<Quote />
+<List />
+
+
+Components:
+APP
+Nav
+Quote
+List - lists ListItems
+ListItem
+
+
+ListItem component
+props: {name, removeItem(), priority}
+
+
+
+
+express arch:
+
+userController / model
+
+toDoListController / model
+
+listItem schema
