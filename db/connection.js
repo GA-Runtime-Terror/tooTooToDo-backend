@@ -17,7 +17,7 @@ mongoose
 	.then((instance) => {
 		console.log(`Connected to db: ${instance.connections[0].name}`);
 	})
-	.cath((error) => {
+	.catch((error) => {
 		console.log('Connection failed', error);
 	});
 
