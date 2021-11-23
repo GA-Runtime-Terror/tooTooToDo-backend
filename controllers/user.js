@@ -59,6 +59,7 @@ router.get('/login/authenticate', (req, res) => {
 				console.log('login success');
 				res.json({
 					status: 200,
+					success: 'success',
 					user: user,
 				});
 				return;
