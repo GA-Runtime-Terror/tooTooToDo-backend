@@ -73,6 +73,7 @@ router.get('/login/authenticate', (req, res) => {
 			}
 		}
 	);
+});
 
 //Add a user in database
 router.post('/', (req, res) => {
