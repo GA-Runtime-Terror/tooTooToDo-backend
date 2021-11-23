@@ -3,12 +3,10 @@ module.exports = {
 		{
 			userName: 'name1',
 			password: 'password1',
-			toDoLists: [],
 		},
 		{
 			userName: 'name2',
 			password: 'password2',
-			toDoLists: [],
 		},
 	],
 	lists: [

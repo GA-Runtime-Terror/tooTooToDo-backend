@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
 	userName: String,
 	password: String,
-	toDoLists: { ref: 'List', type: mongoose.Schema.Types.ObjectId },
+	toDoLists: [{ ref: 'List', type: mongoose.Schema.Types.ObjectId }],
 });
 
 module.exports = mongoose.model('User', userSchema);

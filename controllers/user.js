@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const List = require('../models/toDoList');
 
+//Get all the users
 router.get('/', (req, res) => {
 	User.find({})
 		.populate('toDoLists')
@@ -14,6 +15,7 @@ router.get('/', (req, res) => {
 		});
 });
 
+//Get a user by id
 router.get('/:id', (req, res) => {
 	User.find({ _id: req.params.id }).then((user) => {
 		res.json({
@@ -34,6 +36,7 @@ router.get('/login/:userName', (req, res) => {
 	});
 });
 
+//Add a user in database
 router.post('/', (req, res) => {
 	User.create(req.body, (err) => {
 		if (err) console.log(err);
@@ -43,6 +46,17 @@ router.post('/', (req, res) => {
 	});
 });
 
+//Add a list to user by of both user and the list adding to
+router.post('/:userId/addList/:listId', async (req, res) => {
+	const list = await List.findById(req.params.listId);
+	const user = await User.findByIdAndUpdate(req.params.userId, {
+		$push: { toDoLists: list.id },
+		new: true,
+	});
+	res.json({ status: 200, data: user });
+});
+
+//Update a user by id
 router.put('/:id', (req, res) => {
 	User.findByIdAndUpdate(
 		req.params.id,
@@ -55,15 +69,7 @@ router.put('/:id', (req, res) => {
 	);
 });
 
-router.put('/:userId/addList/:listId', async (req, res) => {
-	const list = await List.findById(req.params.listId);
-	const user = await User.findByIdAndUpdate(req.params.userId, {
-		$push: { toDoLists: list.id },
-		new: true,
-	});
-	res.json({ status: 200, data: user });
-});
-
+//Delete a user by id
 router.delete('/:id', (req, res) => {
 	User.findByIdAndDelete(req.params.id, (err, item) => {
 		if (err) console.log(err);

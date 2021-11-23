@@ -3,14 +3,18 @@ const seedData = require('./seedData');
 const List = require('../models/toDoList');
 
 List.deleteMany({}).then(() => {
-	List.insertMany(seedData.lists, (err, lists) => {
+	List.insertMany(seedData.lists, (err) => {
 		if (err) console.log(err);
 		else {
 			User.deleteMany({}).then(() => {
-				console.log('seed donezo');
+				User.insertMany(seedData.users, (err) => {
+					if (err) console.log(err);
+					else {
+						console.log('seed donezo');
+						process.exit();
+					}
+				});
 			});
-			console.log('seed done?');
 		}
-		process.exit();
 	});
 });
