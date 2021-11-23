@@ -40,6 +40,13 @@ router.get('/:name', (req, res) => {
 });
 
 router.get('/login/authenticate', (req, res) => {
+	res.json({
+		status: 200,
+		user: {
+			userName: req.params.userName,
+			password: req.params.password,
+		},
+	});
 	User.getAuthenticated(
 		req.params.userName,
 		req.params.password,
