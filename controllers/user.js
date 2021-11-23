@@ -26,23 +26,52 @@ router.get('/:id', (req, res) => {
 	});
 });
 
-router.get('/login/:userName', (req, res) => {
-	User.find({ userName: req.params.userName }).then((user) => {
-		res.json({
-			status: 200,
-			User: user.userName,
-			Lists: user.toDoLists,
-		});
-	});
+router.get('/login/authenticate', (req, res) => {
+	User.getAuthenticated(
+		req.body.userName,
+		req.body.password,
+		function (err, user, reason) {
+			if (err) throw err;
+
+			// login was successful if we have a user
+			if (user) {
+				// handle login success
+				console.log('login success');
+				res.json({
+					status: 200,
+				});
+				return;
+			}
+
+			// otherwise we can determine why we failed
+			var reasons = User.failedLogin;
+			switch (reason) {
+				case reasons.NOT_FOUND:
+				case reasons.PASSWORD_INCORRECT:
+					// note: these cases are usually treated the same - don't tell
+					// the user *why* the login failed, only that it did
+					res.json('error');
+					break;
+				case reasons.MAX_ATTEMPTS:
+					// send email or otherwise notify user that account is
+					// temporarily locked
+					res.json('error');
+					break;
+			}
+		}
+	);
 });
 
 //Add a user in database
 router.post('/', (req, res) => {
-	User.create(req.body, (err) => {
-		if (err) console.log(err);
-		else {
-			User.find({}).then((Users) => res.json(Users));
-		}
+	let newUser = new User({
+		userName: req.body.userName,
+		password: req.body.password,
+	});
+
+	newUser.save((err) => {
+		if (err) throw err;
+		res.json({ status: 200, data: newUser.userName });
 	});
 });
 
