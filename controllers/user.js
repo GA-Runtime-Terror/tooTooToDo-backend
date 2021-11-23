@@ -41,8 +41,8 @@ router.get('/:name', (req, res) => {
 
 router.get('/login/authenticate', (req, res) => {
 	User.getAuthenticated(
-		req.body.userName,
-		req.body.password,
+		req.params.userName,
+		req.params.password,
 		function (err, user, reason) {
 			if (err) throw err;
 
