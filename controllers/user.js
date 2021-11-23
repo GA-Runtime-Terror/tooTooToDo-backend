@@ -16,18 +16,31 @@ router.get('/', (req, res) => {
 });
 
 //Get a user by id
-router.get('/:id', (req, res) => {
-	User.find({ _id: req.params.id }).then((user) => {
-		res.json({
-			status: 200,
-			User: user.userName,
-			Lists: user.toDoLists,
+// router.get('/:id', (req, res) => {
+// 	User.find({ _id: req.params.id }).then((user) => {
+// 		res.json({
+// 			status: 200,
+// 			User: user.userName,
+// 			Lists: user.toDoLists,
+// 		});
+// 	});
+// });
+
+//Get a user by userName
+router.get('/:name', (req, res) => {
+	User.findOne({ userName: req.params.name })
+		.populate()
+		.then((user) => {
+			res.json({
+				status: 200,
+				User: user.userName,
+				Lists: user.toDoLists,
+			});
 		});
-	});
 });
 
 router.get('/login/:userName', (req, res) => {
-	User.find({ userName: req.params.userName }).then((user) => {
+	User.findOne({ userName: req.params.userName }).then((user) => {
 		res.json({
 			status: 200,
 			User: user.userName,
