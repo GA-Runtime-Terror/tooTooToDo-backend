@@ -46,7 +46,10 @@ router.get('/login/authenticate', (req, res) => {
 		function (err, user, reason) {
 			if (err) {
 				// throw err;
-				res.json(err);
+				res.json({
+					status: 'error',
+					error: err,
+				});
 			}
 
 			// login was successful if we have a user
@@ -67,12 +70,20 @@ router.get('/login/authenticate', (req, res) => {
 				case reasons.PASSWORD_INCORRECT:
 					// note: these cases are usually treated the same - don't tell
 					// the user *why* the login failed, only that it did
-					res.json(reason);
+					res.json({
+						data: 'error',
+						cause: 'not found or password incorrect',
+						reason: reasons,
+					});
 					break;
 				case reasons.MAX_ATTEMPTS:
 					// send email or otherwise notify user that account is
 					// temporarily locked
-					res.json(reason);
+					res.json({
+						data: 'error',
+						cause: 'max attempt reached',
+						reason: reasons,
+					});
 					break;
 			}
 		}
