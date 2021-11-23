@@ -23,4 +23,4 @@ mongoose
 
 module.exports = mongoose;
 
-//'mongodb+srv://admin:adminPassword@cluster0.74tjr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+//"mongodb+srv://admin:adminPassword@cluster0.74tjr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
