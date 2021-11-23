@@ -41,10 +41,10 @@ router.get('/:name', (req, res) => {
 
 router.get('/login/authenticate', (req, res) => {
 	res.json({
-		status: 200,
+		status: 'good',
 		user: {
-			userName: req.params.userName,
-			password: req.params.password,
+			name: 'name',
+			password: 'password',
 		},
 	});
 	User.getAuthenticated(
