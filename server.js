@@ -23,6 +23,8 @@ app.use('/lists', listController);
 const userController = require('./controllers/user');
 app.use('/users', userController);
 
-app.listen(PORT, () => {
-	console.log('we live on port ' + PORT);
+app.set('port', process.env.PORT || 8080);
+
+app.listen(app.get('port'), () => {
+	console.log(`PORT: ${app.get('port')}`);
 });
