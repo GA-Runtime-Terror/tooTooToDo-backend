@@ -85,7 +85,7 @@ router.post('/', (req, res) => {
 
 	newUser.save((err) => {
 		if (err) throw err;
-		res.json({ status: 200, data: newUser.userName });
+		res.json({ status: 200, user: newUser });
 	});
 });
 
