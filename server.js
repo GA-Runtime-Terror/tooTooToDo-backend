@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const PORT = process.env.PORT || 8080;
 const cors = require('cors');
 const parser = require('body-parser');
 
@@ -25,5 +24,5 @@ app.use('/lists', listController);
 const userController = require('./controllers/user');
 app.use('/users', userController);
 
-app.set('port', PORT);
+app.set('port', process.env.PORT || 8080);
 app.listen(app.get('port'), () => console.log(`PORT: ${app.get('port')} 🌟`));
