@@ -41,10 +41,16 @@ router.get('/:name', (req, res) => {
 
 router.get('/login/authenticate', (req, res) => {
 	User.getAuthenticated(
-		req.body.userName,
-		req.body.password,
+		req.params.userName,
+		req.params.password,
 		function (err, user, reason) {
-			if (err) throw err;
+			if (err) {
+				// throw err;
+				res.json({
+					status: 'error',
+					error: err,
+				});
+			}
 
 			// login was successful if we have a user
 			if (user) {
@@ -52,6 +58,7 @@ router.get('/login/authenticate', (req, res) => {
 				console.log('login success');
 				res.json({
 					status: 200,
+					user: user,
 				});
 				return;
 			}
@@ -63,12 +70,18 @@ router.get('/login/authenticate', (req, res) => {
 				case reasons.PASSWORD_INCORRECT:
 					// note: these cases are usually treated the same - don't tell
 					// the user *why* the login failed, only that it did
-					res.json('error');
+					res.json({
+						status: 'error',
+						reason: reasons,
+					});
 					break;
 				case reasons.MAX_ATTEMPTS:
 					// send email or otherwise notify user that account is
 					// temporarily locked
-					res.json('error');
+					res.json({
+						status: 'error',
+						reason: reasons,
+					});
 					break;
 			}
 		}
@@ -84,7 +97,7 @@ router.post('/', (req, res) => {
 
 	newUser.save((err) => {
 		if (err) throw err;
-		res.json({ status: 200, data: newUser.userName });
+		res.json({ status: 200, user: newUser });
 	});
 });
 
