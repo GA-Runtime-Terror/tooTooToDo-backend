@@ -73,8 +73,9 @@ router.get('/login/authenticate', (req, res) => {
 					res.json({
 						data: 'error',
 						cause: 'not found or password incorrect',
-						name: req.params.userName,
-						password: req.params.password,
+						name: 'some user',
+						password: 'some password',
+						reason: reasons,
 					});
 					break;
 				case reasons.MAX_ATTEMPTS:
