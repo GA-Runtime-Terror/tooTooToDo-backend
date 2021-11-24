@@ -40,54 +40,52 @@ router.get('/:name', (req, res) => {
 });
 
 router.get('/login/authenticate', (req, res) => {
-	const name = req.params.userName;
-	const password = req.params.password;
-	User.getAuthenticated(name, password, function (err, user, reason) {
-		if (err) {
-			// throw err;
-			res.json({
-				status: 'error',
-				error: err,
-			});
-		}
-
-		// login was successful if we have a user
-		if (user) {
-			// handle login success
-			console.log('login success');
-			res.json({
-				status: 200,
-				user: user,
-			});
-			return;
-		}
-
-		// otherwise we can determine why we failed
-		var reasons = User.failedLogin;
-		switch (reason) {
-			case reasons.NOT_FOUND:
-			case reasons.PASSWORD_INCORRECT:
-				// note: these cases are usually treated the same - don't tell
-				// the user *why* the login failed, only that it did
+	User.getAuthenticated(
+		req.params.userName,
+		req.params.password,
+		function (err, user, reason) {
+			if (err) {
+				// throw err;
 				res.json({
-					data: 'error',
-					cause: 'not found or password incorrect',
-					name: name,
-					password: password,
-					reason: reasons,
+					status: 'error',
+					error: err,
 				});
-				break;
-			case reasons.MAX_ATTEMPTS:
-				// send email or otherwise notify user that account is
-				// temporarily locked
+			}
+
+			// login was successful if we have a user
+			if (user) {
+				// handle login success
+				console.log('login success');
 				res.json({
-					data: 'error',
-					cause: 'max attempt reached',
-					reason: reasons,
+					status: 200,
+					user: user,
 				});
-				break;
+				return;
+			}
+
+			// otherwise we can determine why we failed
+			var reasons = User.failedLogin;
+			switch (reason) {
+				case reasons.NOT_FOUND:
+				case reasons.PASSWORD_INCORRECT:
+					// note: these cases are usually treated the same - don't tell
+					// the user *why* the login failed, only that it did
+					res.json({
+						status: 'error',
+						reason: reasons,
+					});
+					break;
+				case reasons.MAX_ATTEMPTS:
+					// send email or otherwise notify user that account is
+					// temporarily locked
+					res.json({
+						status: 'error',
+						reason: reasons,
+					});
+					break;
+			}
 		}
-	});
+	);
 });
 
 //Add a user in database
