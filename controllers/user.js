@@ -39,53 +39,31 @@ router.get('/:name', (req, res) => {
 		});
 });
 
-router.get('/login/authenticate', (req, res) => {
-	User.getAuthenticated(
-		req.params.userName,
-		req.params.password,
-		function (err, user, reason) {
-			if (err) {
-				// throw err;
-				res.json({
-					status: 'error',
-					error: err,
-				});
-			}
-
-			// login was successful if we have a user
-			if (user) {
-				// handle login success
-				console.log('login success');
-				res.json({
-					status: 200,
-					user: user,
-				});
-				return;
-			}
-
-			// otherwise we can determine why we failed
-			var reasons = User.failedLogin;
-			switch (reason) {
-				case reasons.NOT_FOUND:
-				case reasons.PASSWORD_INCORRECT:
-					// note: these cases are usually treated the same - don't tell
-					// the user *why* the login failed, only that it did
-					res.json({
-						status: 'error',
-						reason: reasons,
+router.get('/login', (req, res) => {
+	User.findOne({ userName: req.body.userName }, (err, user) => {
+		if (err) throw err;
+		if (!user)
+			res.send({
+				status: 401,
+				res: 'invalid credentials',
+			});
+		else
+			user.comparePassword(req.body.password, (err, isMatch) => {
+				if (err) throw err;
+				console.log('password', isMatch);
+				if (isMatch)
+					res.send({
+						status: 200,
+						name: user.userName,
 					});
-					break;
-				case reasons.MAX_ATTEMPTS:
-					// send email or otherwise notify user that account is
-					// temporarily locked
-					res.json({
-						status: 'error',
-						reason: reasons,
+				else {
+					res.send({
+						status: 401,
+						res: 'invalid credentials',
 					});
-					break;
-			}
-		}
-	);
+				}
+			});
+	});
 });
 
 //Add a user in database
