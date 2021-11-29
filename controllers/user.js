@@ -46,7 +46,7 @@ router.get('/login/authenticate', (req, res) => {
 		if (!user)
 			res.send({
 				status: 401,
-				res: 'invalid credentials',
+				res: 'invalid credentials: no username',
 			});
 		else
 			user.comparePassword(req.params.password, (err, isMatch) => {
@@ -60,7 +60,7 @@ router.get('/login/authenticate', (req, res) => {
 				else {
 					res.send({
 						status: 401,
-						res: 'invalid credentials',
+						res: 'invalid credentials: password',
 					});
 				}
 			});
