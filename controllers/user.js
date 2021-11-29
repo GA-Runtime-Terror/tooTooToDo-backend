@@ -39,7 +39,8 @@ router.get('/:name', (req, res) => {
 		});
 });
 
-router.get('/login', (req, res) => {
+router.get('/login/authenticate', (req, res) => {
+	console.log(req.body);
 	User.findOne({ userName: req.body.userName }, (err, user) => {
 		if (err) throw err;
 		if (!user)
