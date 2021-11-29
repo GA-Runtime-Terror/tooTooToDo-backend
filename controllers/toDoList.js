@@ -66,11 +66,18 @@ router.put('/:id', (req, res) => {
 
 //Delete a task by id of both the task and parent list
 router.delete('/:listId/:taskId', async (req, res) => {
-	const list = await List.findById(req.params.listId);
-	list.toDoItems.pull({ _id: req.params.taskId });
-	await list.save();
-	const allList = await List.find({});
-	res.json(allList);
+	List.findById(req.params.listId).then((list) => {
+		list.toDoItems.pull({ _id: req.params.taskId });
+		list.save().then(() => {
+			List.find({}).then((updatedList) => {
+				res.json({
+					status: 200,
+					msg: 'task deleted',
+					list: updatedList,
+				});
+			});
+		});
+	});
 });
 
 module.exports = router;
