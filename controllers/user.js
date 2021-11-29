@@ -41,7 +41,7 @@ router.get('/:name', (req, res) => {
 
 router.get('/login/authenticate', (req, res) => {
 	console.log('params; ', req);
-	User.findOne({ userName: req.params.userName }, (err, user) => {
+	User.findOne({ userName: req.query.userName }, (err, user) => {
 		if (err) throw err;
 		if (!user)
 			res.send({
@@ -49,7 +49,7 @@ router.get('/login/authenticate', (req, res) => {
 				res: 'invalid credentials: no username',
 			});
 		else
-			user.comparePassword(req.params.password, (err, isMatch) => {
+			user.comparePassword(req.query.password, (err, isMatch) => {
 				if (err) throw err;
 				console.log('password', isMatch);
 				if (isMatch)
