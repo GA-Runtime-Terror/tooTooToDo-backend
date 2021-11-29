@@ -55,7 +55,8 @@ router.get('/login/authenticate', (req, res) => {
 					res.send({
 						status: 200,
 						name: user.userName,
-						lists: user.toDoLists,
+						id: user._id,
+						toDoList: user.toDoList,
 					});
 				else {
 					res.send({

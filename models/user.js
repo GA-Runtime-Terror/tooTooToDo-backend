@@ -6,7 +6,7 @@ const SALT_WORK_FACTOR = 10;
 const UserSchema = new Schema({
 	userName: { type: String, required: true, index: { unique: true } },
 	password: { type: String, required: true },
-	toDoLists: [{ ref: 'List', type: mongoose.Schema.Types.ObjectId }],
+	toDoList: { ref: 'List', type: mongoose.Schema.Types.ObjectId },
 });
 
 UserSchema.pre('save', function (next) {
