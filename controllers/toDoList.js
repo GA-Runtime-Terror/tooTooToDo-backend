@@ -23,14 +23,14 @@ router.get('/:id', (req, res) => {
 });
 
 //Add a list to database
-router.post('/', (req, res) => {
-	List.create(req.body, (err) => {
-		if (err) console.log(err);
-		else {
-			List.find({}).then((list) => res.json(list));
-		}
-	});
-});
+// router.post('/', (req, res) => {
+// 	List.create(req.body, (err) => {
+// 		if (err) console.log(err);
+// 		else {
+// 			List.find({}).then((list) => res.json(list));
+// 		}
+// 	});
+// });
 
 //Add a task to list by id of the list
 router.post('/:id', async (req, res) => {
@@ -55,12 +55,12 @@ router.put('/:id', (req, res) => {
 });
 
 //Delete a list by id
-router.delete('/:id', (req, res) => {
-	List.findByIdAndDelete(req.params.id, (err, item) => {
-		if (err) console.log(err);
-		else res.json(item);
-	});
-});
+// router.delete('/:id', (req, res) => {
+// 	List.findByIdAndDelete(req.params.id, (err, item) => {
+// 		if (err) console.log(err);
+// 		else res.json(item);
+// 	});
+// });
 
 //Delete a task by id of both the task and parent list
 router.delete('/:listId/:taskId', async (req, res) => {
