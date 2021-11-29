@@ -74,10 +74,11 @@ router.post('/', (req, res) => {
 		title: 'todos',
 		toDoItems: [],
 	});
+
 	const newUser = new User({
 		userName: req.body.userName,
 		password: req.body.password,
-		toDoList: newList.id,
+		toDoList: newList._id,
 	});
 
 	newUser.save((err) => {
