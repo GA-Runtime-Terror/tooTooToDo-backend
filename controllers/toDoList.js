@@ -34,11 +34,13 @@ router.get('/:id', (req, res) => {
 
 //Add a task to list by id of the list
 router.post('/:id', async (req, res) => {
-	const task = await List.findByIdAndUpdate(req.params.id, {
+	List.findByIdAndUpdate(req.params.id, {
 		$push: { toDoItems: req.body },
-		new: true,
-	});
-	res.json({ status: 200, data: task });
+	}).then(
+		List.find({}).then((task) => {
+			res.json({ status: 200, data: task });
+		})
+	);
 });
 
 //Update a list by id
