@@ -40,7 +40,6 @@ router.get('/:name', (req, res) => {
 });
 
 router.get('/login/authenticate', (req, res) => {
-	console.log('params; ', req);
 	User.findOne({ userName: req.query.userName }, (err, user) => {
 		if (err) throw err;
 		if (!user)
@@ -56,6 +55,7 @@ router.get('/login/authenticate', (req, res) => {
 					res.send({
 						status: 200,
 						name: user.userName,
+						lists: user.toDoLists,
 					});
 				else {
 					res.send({
