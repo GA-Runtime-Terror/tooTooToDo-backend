@@ -27,19 +27,20 @@ router.get('/', (req, res) => {
 // });
 
 //Get a user by userName
-router.get('/:name', (req, res) => {
-	User.findOne({ userName: req.params.name })
-		.populate()
-		.then((user) => {
-			res.json({
-				status: 200,
-				User: user.userName,
-				List: user.toDoList,
-			});
-		});
-});
+// router.get('/:name', (req, res) => {
+// 	User.findOne({ userName: req.params.name })
+// 		.populate()
+// 		.then((user) => {
+// 			res.json({
+// 				status: 200,
+// 				User: user.userName,
+// 				List: user.toDoList,
+// 			});
+// 		});
+// });
 
-router.get('/login/authenticate', (req, res) => {
+//Login user: check name then password
+router.get('/login', (req, res) => {
 	User.findOne({ userName: req.query.userName }, (err, user) => {
 		if (err) throw err;
 		if (!user)
@@ -70,40 +71,55 @@ router.get('/login/authenticate', (req, res) => {
 
 //Add a user in database
 router.post('/', (req, res) => {
-	const newList = new List({
-		title: 'todos',
-		toDoItems: [],
-	});
-
-	newList.save((err) => {
+	//check if the user already exist in database or not by username
+	User.findOne({ userName: req.body.userName }, (err, user) => {
+		//if any error occurs
 		if (err) throw err;
-		const newUser = new User({
-			userName: req.body.userName,
-			password: req.body.password,
-			toDoList: newList._id,
-		});
-
-		newUser.save((err) => {
-			if (err) throw err;
+		//if user exists send error msg
+		if (user)
 			res.json({
-				status: 200,
-				id: newUser._id,
-				name: newUser.userName,
-				list: newList,
+				status: 400,
+				msg: 'Username taken',
 			});
-		});
+		else {
+			//else, create a new list
+			const newList = new List({
+				title: 'todos',
+				toDoItems: [],
+			});
+			//save the list to database
+			newList.save((err) => {
+				if (err) throw err;
+				//create a new user and ref the added list to the newly created user
+				const newUser = new User({
+					userName: req.body.userName,
+					password: req.body.password,
+					toDoList: newList._id,
+				});
+				//save the new user to database then return the user to client
+				newUser.save((err) => {
+					if (err) throw err;
+					res.json({
+						status: 200,
+						id: newUser._id,
+						name: newUser.userName,
+						list: newList,
+					});
+				});
+			});
+		}
 	});
 });
 
 //Add a list to user by of both user and the list adding to
-router.post('/:userId/addList/:listId', async (req, res) => {
-	const list = await List.findById(req.params.listId);
-	const user = await User.findByIdAndUpdate(req.params.userId, {
-		toDoList: list.id,
-		new: true,
-	});
-	res.json({ status: 200, data: user });
-});
+// router.post('/:userId/addList/:listId', async (req, res) => {
+// 	const list = await List.findById(req.params.listId);
+// 	const user = await User.findByIdAndUpdate(req.params.userId, {
+// 		toDoList: list.id,
+// 		new: true,
+// 	});
+// 	res.json({ status: 200, data: user });
+// });
 
 //Update a user by id
 router.put('/:id', (req, res) => {
@@ -119,10 +135,33 @@ router.put('/:id', (req, res) => {
 });
 
 //Delete a user by id
-router.delete('/:id', (req, res) => {
-	User.findByIdAndDelete(req.params.id, (err, item) => {
-		if (err) console.log(err);
-		else res.json(item);
+router.delete('/', (req, res) => {
+	User.findOne({ userName: req.query.userName }, (err, user) => {
+		if (err) throw err;
+		if (!user)
+			res.send({
+				status: 401,
+				res: 'invalid credentials: no username',
+			});
+		else
+			user.comparePassword(req.query.password, (err, isMatch) => {
+				if (err) throw err;
+				if (isMatch)
+					User.findByIdAndDelete(user._id, (err) => {
+						if (err) console.log(err);
+						else
+							res.json({
+								status: 200,
+								msg: 'user deleted',
+							});
+					});
+				else {
+					res.send({
+						status: 401,
+						res: 'invalid credentials: password',
+					});
+				}
+			});
 	});
 });
 
