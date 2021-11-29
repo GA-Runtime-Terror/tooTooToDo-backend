@@ -6,7 +6,7 @@ const List = require('../models/toDoList');
 //Get all the users
 router.get('/', (req, res) => {
 	User.find({})
-		.populate('toDoLists')
+		.populate('toDoList')
 		.then((allUsers) => {
 			res.json({
 				status: 200,
@@ -34,7 +34,7 @@ router.get('/:name', (req, res) => {
 			res.json({
 				status: 200,
 				User: user.userName,
-				Lists: user.toDoLists,
+				List: user.toDoList,
 			});
 		});
 });
@@ -85,7 +85,7 @@ router.post('/', (req, res) => {
 router.post('/:userId/addList/:listId', async (req, res) => {
 	const list = await List.findById(req.params.listId);
 	const user = await User.findByIdAndUpdate(req.params.userId, {
-		$push: { toDoLists: list.id },
+		toDoList: list.id,
 		new: true,
 	});
 	res.json({ status: 200, data: user });
