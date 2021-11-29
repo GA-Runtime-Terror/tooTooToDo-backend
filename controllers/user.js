@@ -70,9 +70,14 @@ router.get('/login/authenticate', (req, res) => {
 
 //Add a user in database
 router.post('/', (req, res) => {
-	let newUser = new User({
+	const newList = new List({
+		title: 'todos',
+		toDoItems: [],
+	});
+	const newUser = new User({
 		userName: req.body.userName,
 		password: req.body.password,
+		toDoList: newList.id,
 	});
 
 	newUser.save((err) => {
