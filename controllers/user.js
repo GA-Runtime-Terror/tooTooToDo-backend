@@ -75,15 +75,18 @@ router.post('/', (req, res) => {
 		toDoItems: [],
 	});
 
-	const newUser = new User({
-		userName: req.body.userName,
-		password: req.body.password,
-		toDoList: newList._id,
-	});
-
-	newUser.save((err) => {
+	newList.save((err) => {
 		if (err) throw err;
-		res.json({ status: 200, name: newUser.userName, id: newUser._id });
+		const newUser = new User({
+			userName: req.body.userName,
+			password: req.body.password,
+			toDoList: newList._id,
+		});
+
+		newUser.save((err) => {
+			if (err) throw err;
+			res.json({ status: 200, name: newUser.userName, id: newUser._id });
+		});
 	});
 });
 
