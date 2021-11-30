@@ -70,7 +70,7 @@ router.delete('/:listId/:taskId', async (req, res) => {
 	List.findById(req.params.listId).then((list) => {
 		list.toDoItems.pull({ _id: req.params.taskId });
 		list.save().then(() => {
-			List.find({}).then((updatedList) => {
+			List.findById(req.params.listId).then((updatedList) => {
 				res.json({
 					status: 200,
 					msg: 'task deleted',
